@@ -6,14 +6,22 @@ const Header = (props) => {
   )
 }
 
+const Part = (props) => {
+  return (
+    <p>
+      {props.name} {props.num}
+    </p>
+  )
+}
+
 const Content = (props) => {
   return (
     <div>
       {props.name.map((name, index) => (
-        <p key={index}>{name} {props.num[index]}</p>
+        <Part key={index} name={name} num={props.num[index]} />
       ))}
     </div>
-  );
+  )
 }
 
 const Total = (props) => {
