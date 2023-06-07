@@ -1,0 +1,36 @@
+{
+  "name": "phonebook_backend",
+  "version": "1.0.0",
+  "description": "exercise from part 3",
+  "main": "index.js",
+  "scripts": {
+    "start": "node index.js",
+    "dev": "nodemon index.js",
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "build:ui": "@powershell Remove-Item -Recurse -Force build && cd ../../2/thephonebook/ && npm run build && @powershell Copy-Item build -Recurse ../../3/phonebook_backend",
+    "deploy": "fly deploy",
+    "deploy:full": "npm run build:ui && npm run deploy",
+    "logs:prod": "fly logs"
+  },
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/kukko100/Full-Stack-Mooc---2023.git"
+  },
+  "author": "kukko100",
+  "license": "ISC",
+  "bugs": {
+    "url": "https://github.com/kukko100/Full-Stack-Mooc---2023/issues"
+  },
+  "homepage": "https://github.com/kukko100/Full-Stack-Mooc---2023#readme",
+  "dependencies": {
+    "cors": "^2.8.5",
+    "dotenv": "^16.1.3",
+    "express": "^4.18.2",
+    "mongoose": "^7.2.2",
+    "morgan": "^1.10.0"
+  },
+  "devDependencies": {
+    "@flydotio/dockerfile": "^0.2.13",
+    "nodemon": "^2.0.22"
+  }
+}

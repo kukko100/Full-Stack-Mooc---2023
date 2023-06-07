@@ -29,8 +29,12 @@ function App() {
 
   const addPerson = (event) => {
     event.preventDefault()
-    
+    if (newName === "" || newNum === "") {
+      alert("Both fields, name and number, have to be filled")
+      return
+    }
     const newPerson = { name: newName, number: newNum}
+    
     const idAddPerson = checkIfExists({ newPerson })
     if (idAddPerson === -1) {
       personServices
@@ -49,7 +53,7 @@ function App() {
     } else {
       if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
         personServices
-          .update(idAddPerson + 1, newPerson)
+          .update(idAddPerson, newPerson)
           .then(response => {
             const updatedPersons = [ ...persons ]
             updatedPersons[idAddPerson] = response
@@ -57,6 +61,7 @@ function App() {
             setPersons(updatedPersons)
             setNewName('')
             setNewNum('')
+            setUpdateTick(updateTick + 1)
           })
           .catch(error => {
             setPersonDeleted(newPerson.name)
@@ -80,7 +85,11 @@ function App() {
 
   const checkIfExists = ({ newPerson }) => {
     const index = persons.findIndex((person) => person.name === newPerson.name)
-    return index
+    if (index === -1) {
+      return index
+    }
+    console.log(persons[index].id)
+    return persons[index].id
   }
 
   const handleFilterChange = (event) => {
