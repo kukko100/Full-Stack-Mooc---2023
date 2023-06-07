@@ -34,4 +34,23 @@ const MessageAlreadyDeleted = ({ personDeleted }) => {
     )
 }
 
-export default { MessageAddSuccessful, MessageAlreadyDeleted }
+const MessageError = ({ personError }) => {
+    console.log(personError)
+    const messageStyle = {
+        color: "red",
+        background: "lightgray",
+        fontSize: 20,
+        borderStyle: "solid",
+        borderRadius: 5,
+        padding: 10,
+        marginBottom: 10
+    }
+
+    return (
+        <div style={messageStyle}>
+            <em>Error: {personError} </em>
+        </div>
+    )
+}
+
+export default { MessageAddSuccessful, MessageAlreadyDeleted, MessageError }

@@ -17,6 +17,7 @@ function App() {
   const [errorMessage, setErrorMessage] = useState('')
   const [personAdded, setPersonAdded] = useState('')
   const [personDeleted, setPersonDeleted] = useState('')
+  const [personError, setPersonError] = useState('')
 
   //Get all people from server when starting up
   useEffect(() => {
@@ -29,12 +30,8 @@ function App() {
 
   const addPerson = (event) => {
     event.preventDefault()
-    if (newName === "" || newNum === "") {
-      alert("Both fields, name and number, have to be filled")
-      return
-    }
-    const newPerson = { name: newName, number: newNum}
-    
+
+    const newPerson = { name: newName, phoneNumber: newNum}
     const idAddPerson = checkIfExists({ newPerson })
     if (idAddPerson === -1) {
       personServices
@@ -50,6 +47,12 @@ function App() {
             setPersonAdded(null)
           }, 5000)
         })
+        .catch(error => {
+          setPersonError(error.response.data.error)
+          setTimeout(() => {
+            setPersonError('')
+          }, 5000)
+        })
     } else {
       if (window.confirm(`${newName} is already added to phonebook, replace the old number with a new one?`)) {
         personServices
@@ -57,16 +60,15 @@ function App() {
           .then(response => {
             const updatedPersons = [ ...persons ]
             updatedPersons[idAddPerson] = response
-            console.log(response)
             setPersons(updatedPersons)
             setNewName('')
             setNewNum('')
             setUpdateTick(updateTick + 1)
           })
           .catch(error => {
-            setPersonDeleted(newPerson.name)
+            setPersonError(error.response.data.error)
             setTimeout(() => {
-              setPersonDeleted(null)
+              setPersonError('')
             }, 5000)
             setUpdateTick(updateTick + 1)
           })
@@ -88,7 +90,6 @@ function App() {
     if (index === -1) {
       return index
     }
-    console.log(persons[index].id)
     return persons[index].id
   }
 
@@ -130,6 +131,9 @@ function App() {
     <div>
       <div>
         <h1>Phonebook</h1>
+        {personError && (
+          <Message.MessageError personError={personError} />
+        )}
         {personDeleted && (
           <Message.MessageAlreadyDeleted personDeleted={personDeleted} />
         )}
