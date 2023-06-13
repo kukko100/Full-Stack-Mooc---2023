@@ -12,12 +12,12 @@ mongoose.set('strictQuery', false)
 logger.info('connectiong to database')
 
 mongoose.connect(config.MONGODB_URI)
-    .then(() => {
-        logger.info('connected to MongoDB')
-    })
-    .catch((error) => {
-        logger.error('error connecting to MongoDB', error.message)
-    })
+  .then(() => {
+    logger.info('connected to MongoDB')
+  })
+  .catch((error) => {
+    logger.error('error connecting to MongoDB', error.message)
+  })
 
 app.use(cors())
 app.use(express.static('build'))
