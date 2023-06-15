@@ -2,8 +2,10 @@ POST http://localhost:3003/api/blogs HTTP/1.1
 content-type: application/json
 
 {
-    "title": "Blog101",
     "author": "Kukko100",
+    "title": "kukon tarinat2",
     "url": "www.google.com",
-    "likes": 1
+    "likes": 1,
+    "userId": "648afd7c0ce49d164abb38b3"
+
 }
