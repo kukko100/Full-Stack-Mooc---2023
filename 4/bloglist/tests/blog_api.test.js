@@ -64,104 +64,146 @@ describe('viewing a specific blog', () => {
   })
 })
 
-describe('addition of new blogs', () => {
-  test('a valid blog can be added', async () => {
-    const newBlog = {
-      title: 'BlogNew',
-      author: 'KukkoNew',
-      url: 'www.google.new',
-      likes: 100,
-    }
+test('a blog can be created by a user logged in', async() => {
+  const blogsAtStart = await helper.blogsInDb()
 
-    await api
-      .post('/api/blogs')
-      .send(newBlog)
-      .expect(201)
-      .expect('Content-Type', /application\/json/)
+  const logInDetails = {
+    username: 'root',
+    password: 'sekret'
+  }
 
-    const blogsAtEnd = await helper.blogsInDb()
-    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length + 1)
+  const result = await api
+    .post('/api/login')
+    .send(logInDetails)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
 
-    const titles = blogsAtEnd.map(b => b.title)
-    expect(titles).toContain('BlogNew')
-  })
+  const testToken = result.body.token
 
-  test('blog without title will not be added', async () => {
-    const newBlog = {
-      author: 'KukkoNew',
-      url: 'www.google.new',
-      likes: 100,
-    }
+  const newBlog = {
+    title: 'testWithLogin',
+    author: logInDetails.username,
+    url: 'loginTestUrl.com',
+  }
 
-    await api
-      .post('/api/blogs')
-      .send(newBlog)
-      .expect(400)
+  await api
+    .post('/api/blogs')
+    .set('authorization', `Bearer ${testToken}`)
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
 
-    const blogsAtEnd = await helper.blogsInDb()
+  const blogsAtEnd = await helper.blogsInDb()
 
-    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
-  })
-
-  test('blog without url will not be added', async () => {
-    const newBlog = {
-      title: 'BlogNew',
-      author: 'KukkoNew',
-      likes: 100
-    }
-
-    await api
-      .post('/api/blogs')
-      .send(newBlog)
-      .expect(400)
-
-    const blogsAtEnd = await helper.blogsInDb()
-
-    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
-  })
-
-  test('identifier property of the blog posts is named id', async () => {
-    const blogsAtStart = await helper.blogsInDb()
-    const firstBlog = blogsAtStart[0]
-
-    expect(firstBlog.id).toBeDefined()
-  })
-
-  test('if likes property is missing from the request it defaults to 0', async () => {
-    const newBlog = {
-      title: 'BlogNew',
-      author: 'KukkoNew',
-      url: 'www.google.new'
-    }
-
-    const response = await api
-      .post('/api/blogs')
-      .send(newBlog)
-      .expect(201)
-      .expect('Content-Type', /application\/json/)
-
-    expect(response.body.likes).toBe(0)
-  })
+  expect(blogsAtEnd).toHaveLength(blogsAtStart.length + 1)
 })
 
-describe('deletion of a blog', () => {
-  test('a blog can be deleted', async () => {
-    const blogsAtStart = await helper.blogsInDb()
-    const blogToDelete = blogsAtStart[0]
+test('a blog CAN NOT be created if credentials incorrect', async() => {
+  const blogsAtStart = await helper.blogsInDb()
 
-    await api
-      .delete(`/api/blogs/${blogToDelete.id}`)
-      .expect(204)
+  const logInDetails = {
+    username: 'root',
+    password: 'sekret111'
+  }
 
-    const blogsAtEnd = await helper.blogsInDb()
+  const result = await api
+    .post('/api/login')
+    .send(logInDetails)
+    .expect(401)
+    .expect('Content-Type', /application\/json/)
 
-    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1)
+  const testToken = result.body.token
 
-    const titles = blogsAtEnd.map(r => r.title)
+  const newBlog = {
+    title: 'testWithLogin',
+    author: logInDetails.username,
+    url: 'loginTestUrl.com',
+  }
 
-    expect(titles).not.toContain(blogToDelete.title)
-  })
+  await api
+    .post('/api/blogs')
+    .set('authorization', `Bearer ${testToken}`)
+    .send(newBlog)
+    .expect(400)
+    .expect('Content-Type', /application\/json/)
+
+  const blogsAtEnd = await helper.blogsInDb()
+
+  expect(blogsAtEnd).toHaveLength(blogsAtStart.length)
 })
+
+test('blog without title will not be added', async () => {
+  const newBlog = {
+    author: 'KukkoNew',
+    url: 'www.google.new',
+    likes: 100,
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+
+  const blogsAtEnd = await helper.blogsInDb()
+
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+})
+
+test('blog without url will not be added', async () => {
+  const newBlog = {
+    title: 'BlogNew',
+    author: 'KukkoNew',
+    likes: 100
+  }
+
+  await api
+    .post('/api/blogs')
+    .send(newBlog)
+    .expect(400)
+
+  const blogsAtEnd = await helper.blogsInDb()
+
+  expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+})
+
+test('identifier property of the blog posts is named id', async () => {
+  const blogsAtStart = await helper.blogsInDb()
+  const firstBlog = blogsAtStart[0]
+
+  expect(firstBlog.id).toBeDefined()
+})
+
+test('if likes property is missing from the request it defaults to 0', async () => {
+  const newBlog = {
+    title: 'BlogNew',
+    author: 'KukkoNew',
+    url: 'www.google.new'
+  }
+
+  const logInDetails = {
+    username: 'root',
+    password: 'sekret',
+  }
+
+  const result = await api
+    .post('/api/login')
+    .send(logInDetails)
+    .expect(200)
+    .expect('Content-Type', /application\/json/)
+
+  const testToken = result.body.token
+
+  const response = await api
+    .post('/api/blogs')
+    .set('authorization', `Bearer ${testToken}`)
+    .send(newBlog)
+    .expect(201)
+    .expect('Content-Type', /application\/json/)
+
+  expect(response.body.likes).toBe(0)
+})
+
+
 
 describe('updating of a blog', () => {
   test('a blogs like count can be updated', async () => {
@@ -236,6 +278,105 @@ describe('updating of a blog', () => {
     expect(firstBlogUrlAtEnd).toBe('www.newurl.com')
     expect(firstBlogUrlAtStart).toBe('www.google.com')
   })
+})
+
+describe('deletion of a blog', () => {
+  test('a blog can be deleted by the author logged in', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToDelete = blogsAtStart[0]
+
+    const logInDetails = {
+      username: 'root',
+      password: 'sekret',
+    }
+
+    const loginResult = await api
+      .post('/api/login')
+      .send(logInDetails)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const testToken = loginResult.body.token
+
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .set('authorization', `Bearer ${testToken}`)
+      .set('user', logInDetails.username)
+      .expect(204)
+
+    const blogsAtEnd = await helper.blogsInDb()
+
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1)
+
+    const titles = blogsAtEnd.map(r => r.title)
+
+    expect(titles).not.toContain(blogToDelete.title)
+  })
+
+  test('a blog can NOT be deleted when invalid login credentials', async () => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToDelete = blogsAtStart[0]
+
+    const logInDetails = {
+      username: 'root',
+      password: 'sekret1',
+    }
+
+    const loginResult = await api
+      .post('/api/login')
+      .send(logInDetails)
+      .expect(401)
+      .expect('Content-Type', /application\/json/)
+
+    const testToken = loginResult.body.token
+
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .set('authorization', `Bearer ${testToken}`)
+      .expect(400)
+
+    const blogsAtEnd = await helper.blogsInDb()
+
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length)
+
+    const titles = blogsAtEnd.map(r => r.title)
+
+    expect(titles).toContain(blogToDelete.title)
+  })
+
+  test('user that is not the author of the blog can NOT delete it', async() => {
+    const blogsAtStart = await helper.blogsInDb()
+    const blogToDelete = blogsAtStart[0]
+
+    const logInDetails = {
+      username: 'root',
+      password: 'sekret',
+    }
+
+    const loginResult = await api
+      .post('/api/login')
+      .send(logInDetails)
+      .expect(200)
+      .expect('Content-Type', /application\/json/)
+
+    const testToken = loginResult.body.token
+
+    await api
+      .delete(`/api/blogs/${blogToDelete.id}`)
+      .set('authorization', `Bearer ${testToken}`)
+      .set('user', logInDetails.username)
+      .expect(204)
+
+    const blogsAtEnd = await helper.blogsInDb()
+
+    expect(blogsAtEnd).toHaveLength(helper.initialBlogs.length - 1)
+
+    const titles = blogsAtEnd.map(r => r.title)
+
+    expect(titles).not.toContain(blogToDelete.title)
+  })
+
+
 })
 
 afterAll(async () => {

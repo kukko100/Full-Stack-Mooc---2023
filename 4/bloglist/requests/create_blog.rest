@@ -1,11 +1,12 @@
 POST http://localhost:3003/api/blogs HTTP/1.1
 content-type: application/json
+authorization: Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6InJvb3QiLCJpZCI6IjY0OTk1ODY1ZGVmNDllYTE1ZTIwNjk2MSIsImlhdCI6MTY4Nzc3MTM2MSwiZXhwIjoxNjg3Nzc0OTYxfQ.EI1HtvVTjWdBXqyHBLQ7nSLL_hXobbUTyXUJCd8Mp68
 
 {
-    "author": "Kukko100",
+    "author": "root",
     "title": "kukon tarinat2",
     "url": "www.google.com",
     "likes": 1,
-    "userId": "648afd7c0ce49d164abb38b3"
+    "userId": "64995865def49ea15e206961"
 
 }
