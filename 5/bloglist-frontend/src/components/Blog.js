@@ -12,12 +12,12 @@ const Blog = ({ blog, updateBlogList }) => {
 
   const handleLikeButton = () => {
     const newBlogObject = {
-      "title": blog.title,
-      "author": blog.author,
-      "url": blog.url,
-      "likes": blog.likes + 1,
-      "user": blog.user["id"],
-      
+      'title': blog.title,
+      'author': blog.author,
+      'url': blog.url,
+      'likes': blog.likes + 1,
+      'user': blog.user['id'],
+
     }
     blogService.update(blog.id, newBlogObject)
     updateBlogList()
@@ -28,7 +28,7 @@ const Blog = ({ blog, updateBlogList }) => {
       blogService.deleteBlog(blog.id)
       updateBlogList()
     }
-    
+
   }
 
   return (
@@ -41,8 +41,6 @@ const Blog = ({ blog, updateBlogList }) => {
         {blog.user['name']}<br/>
         <button onClick={handleDeleteButton}>Delete</button>
       </Togglable>
-      
-      
     </div>
   )
 }

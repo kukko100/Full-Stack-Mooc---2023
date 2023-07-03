@@ -55,7 +55,11 @@ const App = () => {
         }, 5000)
       })
       .catch(error => {
-        setErrorMessage('Unable to add blog.')
+        setErrorMessage('Unable to create a blog')
+        if (error === 'token expired') {
+          handleLogOut()
+          setErrorMessage('Log in expired, logging out...')
+        }
         setTimeout(() => {
           setErrorMessage('')
         }, 5000)
@@ -66,17 +70,17 @@ const App = () => {
   const blogForm = () => {
     return(
       <Togglable buttonLabelEnable="create new blog" buttonLabelDisable="cancel" ref={blogFormRef}>
-      <BlogForm
-        createBlog={addBlog}
-        user={user}
-      />
-    </Togglable>
+        <BlogForm
+          createBlog={addBlog}
+          user={user}
+        />
+      </Togglable>
     )
   }
 
   const handleLogin = async (event) => {
     event.preventDefault()
-    
+
     try {
       const user = await loginService.login({
         username, password
@@ -97,14 +101,14 @@ const App = () => {
     }
   }
 
-  const handleLogOut = (event) => {
+  const handleLogOut = () => {
     window.localStorage.removeItem('loggedBlogUser')
     setUser(null)
   }
 
   const loginForm = () => {
-    const hideWhenVisible = {display: loginVisible ? 'none' : ''}
-    const showWhenVisible = {display: loginVisible ? '' : 'none'}
+    const hideWhenVisible = { display: loginVisible ? 'none' : '' }
+    const showWhenVisible = { display: loginVisible ? '' : 'none' }
 
     return (
       <div>
@@ -113,17 +117,17 @@ const App = () => {
         </div>
         <div style={showWhenVisible}>
           <LoginForm
+            handleSubmit={handleLogin}
+            handleUsernameChange={({ target }) => setUsername(target.value)}
+            handlePasswordChange={({ target }) => setPassword(target.value)}
             username={username}
             password={password}
-            handleUsernameChange={({ target }) => setUsername(target.value)}
-            handlePasswordChange={({ target}) => setPassword(target.value)}
-            handleSubmit={handleLogin}
           />
           <button onClick={() => setLoginVisible(false)}>cancel</button>
         </div>
       </div>
     )
-    
+
   }
 
   return (
@@ -137,14 +141,14 @@ const App = () => {
       )}
       {!user && loginForm()}
       {user && <div>
-          <div>
-            <>{user.username} logged in</>
-            <button onClick={handleLogOut}>log out</button>
-            <h2>Create new</h2>
-          </div>
-          
-          {blogForm()}
-        </div>  
+        <div>
+          <>{user.username} logged in</>
+          <button onClick={handleLogOut}>log out</button>
+          <h2>Create new</h2>
+        </div>
+
+        {blogForm()}
+      </div>
       }
 
       {blogs.map(blog =>
