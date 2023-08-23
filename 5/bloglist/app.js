@@ -12,7 +12,7 @@ const mongoose = require('mongoose')
 
 mongoose.set('strictQuery', false)
 
-logger.info('connectiong to database')
+logger.info('connecting to database')
 
 mongoose.connect(config.MONGODB_URI)
   .then(() => {
@@ -30,6 +30,11 @@ app.use(middleware.requestLogger)
 app.use('/api/blogs', middleware.tokenExtractor, middleware.userExtractor, middleware.authorExtractor, blogsRouter)
 app.use('/api/users', usersRouter)
 app.use('/api/login', loginRouter)
+
+if (process.env.NODE_ENV === 'test') {
+  const testingRouter = require('./controllers/testing')
+  app.use('/api/testing', testingRouter)
+}
 
 app.use(middleware.unknownEndpoint)
 app.use(middleware.errorHandler)

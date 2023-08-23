@@ -10,7 +10,7 @@ const MessageAddSuccessful = ({ blogName, authorName } ) => {
   }
 
   return (
-    <div style={messageStyle}>
+    <div className='success' style={messageStyle}>
       <em>a new blog {blogName} by {authorName} added</em>
     </div>
   )
@@ -28,7 +28,7 @@ const MessageError = ({ errorMessage }) => {
   }
 
   return (
-    <div style={messageStyle}>
+    <div className="error" style={messageStyle}>
       <em>{errorMessage}</em>
     </div>
   )

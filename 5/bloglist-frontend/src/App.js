@@ -23,14 +23,18 @@ const App = () => {
     return sortedBlogs
   }
 
-  const updateBlogList = () => {
-    blogService.getAll().then(blogsFetched =>
-      setBlogs(sortBlogList(blogsFetched))
-    )
+  const renderBlogList = async () => {
+    const blogsFetched = await blogService.getAll()
+    setBlogs(sortBlogList(blogsFetched))
+  }
+
+  const updateBlogList = async (tempBlog) => {
+    await blogService.update(tempBlog.id, tempBlog)
+    renderBlogList()
   }
 
   useEffect(() => {
-    updateBlogList()
+    renderBlogList()
   }, [])
 
   useEffect(() => {
@@ -49,7 +53,7 @@ const App = () => {
       .then(returnedBlog => {
         setBlogs(blogs.concat(returnedBlog))
         setNewBlog(blog)
-        updateBlogList()
+        renderBlogList()
         setTimeout(() => {
           setNewBlog('')
         }, 5000)
@@ -130,6 +134,17 @@ const App = () => {
 
   }
 
+  const blogsReturn = () => {
+    useState()
+    return (
+      <div>
+        {blogs.map(blog =>
+          <Blog key={blog.id} blog={blog} updateBlogList={updateBlogList} renderBlogList={renderBlogList} />
+        )}
+      </div>
+    )
+  }
+
   return (
     <div>
       <h1>blogs</h1>
@@ -146,14 +161,10 @@ const App = () => {
           <button onClick={handleLogOut}>log out</button>
           <h2>Create new</h2>
         </div>
-
         {blogForm()}
       </div>
       }
-
-      {blogs.map(blog =>
-        <Blog key={blog.id} blog={blog} updateBlogList={updateBlogList} />
-      )}
+      {blogsReturn()}
     </div>
   )
 }
