@@ -6,7 +6,7 @@ const Notification = () => {
   
   return (
     <div style={notification.style}>
-      {notification.userAction} '{notification.content}'
+      {notification.userAction}{notification.content}
     </div>
   )
 }
