@@ -1,38 +1,60 @@
 import patients from '../data/patientsDB';
+import { NonSensitivePatient, PatientType, NewPatient } from '../types';
+import { v4 as uuidv4 } from 'uuid'; 
 
-import { NonSensitivePatientEntry, PatientEntry, NewPatientEntry } from '../types';
-
-const getEntries = (): PatientEntry[] => {
+const getPatients = (): PatientType[] => {
   return patients;
 };
 
-const getNonSensitiveEntries = (): NonSensitivePatientEntry[] => {
-  return patients.map(({ id, name, dateOfBirth, gender}) => ({
+
+
+const getNonSensitiveEntries = (): NonSensitivePatient[] => {
+  return patients.map(({ id, name, dateOfBirth, gender, occupation}) => ({
     id,
     name,
     dateOfBirth,
-    gender
+    gender,
+    occupation
   }));
 };
 
-const findById = (id: number): PatientEntry | undefined => {
-  const entry = patients.find(p => p.id === id);
-  return entry;
+const findById = (id: string): PatientType | undefined => {
+  const patient = patients.find(p => p.id === id);
+  return patient;
 };
 
-const addPatient = ( entry: NewPatientEntry ): PatientEntry => {
+const addPatient = ( entry: NewPatient ): PatientType => {
   const newPatientEntry = {
-    id: Math.max(...patients.map(d=> d.id)) + 1,
+    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment, @typescript-eslint/no-unsafe-call
+    id: uuidv4(),
     ...entry
   };
+
+  Object.values(newPatientEntry).forEach(value => {
+      console.log(value);
+  });
 
   patients.push(newPatientEntry);
   return newPatientEntry;
 };
 
+const updatePatient = (id: string, updatedData: object) => {
+  const index = patients.findIndex((patient) => patient.id === id);
+  if (index === -1) {
+    return null;
+  }
+  patients[index] = {
+    ...patients[index],
+    ...updatedData,
+  };
+  return patients[index];
+};
+
+
 export default {
-  getEntries,
   addPatient,
   getNonSensitiveEntries,
-  findById
+  findById,
+  getPatients,
+  updatePatient
 };

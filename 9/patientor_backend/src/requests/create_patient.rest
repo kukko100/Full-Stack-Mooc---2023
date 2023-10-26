@@ -4,6 +4,8 @@ content-type: application/json
 {
   "name": "requestTest",
   "dateOfBirth": "2002-10-10",
+  "ssn": "101002-112a",
   "gender": "male",
-  "occupation": "tester"
+  "occupation": "tester",
+  "entries": []
 }
