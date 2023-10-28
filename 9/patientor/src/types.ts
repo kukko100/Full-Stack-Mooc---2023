@@ -16,11 +16,12 @@ export enum EntryType {
   OccupationalHealthcare = "OccupationalHealthcare"
 }
 
+
 export enum HealthCheckRating {
-  Healthy = "Healthy",
-  LowRisk = "LowRisk",
-  HighRisk = "HighRisk",
-  CriticalRisk = "CriticalRisk"
+  "Healthy" = 0,
+  "LowRisk" = 1,
+  "HighRisk" = 2,
+  "CriticalRisk" = 3
 }
 
 export interface SickLeave {

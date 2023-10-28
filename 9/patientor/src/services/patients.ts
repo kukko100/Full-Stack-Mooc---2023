@@ -36,7 +36,10 @@ const addEntryToPatient = async (object: EntryFormValues, id: string) => {
   // Append the new entry to the patient's entries array
   Object.values(newEntry).forEach(value => {
     if (!value) {
-      flag = true;
+      if (value !== 0) {
+        flag = true;
+      }
+      
     }
   });
 

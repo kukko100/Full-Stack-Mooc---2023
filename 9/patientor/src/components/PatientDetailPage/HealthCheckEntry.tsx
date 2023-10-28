@@ -19,10 +19,10 @@ const HealthCheckEntry: React.FC<Props> = ({ entry }) => {
   const healthRatingIcon3 = <Favorite style={{ fill: 'black' }}/>;
 
   const healthRatingIcon = 
-    healthCheckRating === "Healthy" ? healthRatingIcon0 :
-    healthCheckRating === "LowRisk" ? healthRatingIcon1 :
-    healthCheckRating === "HighRisk" ? healthRatingIcon2 :
-    healthCheckRating === "CriticalRisk" ? healthRatingIcon3 :
+    healthCheckRating === 0 ? healthRatingIcon0 :
+    healthCheckRating === 1 ? healthRatingIcon1 :
+    healthCheckRating === 2 ? healthRatingIcon2 :
+    healthCheckRating === 3 ? healthRatingIcon3 :
     <Favorite/>;
   
   return (

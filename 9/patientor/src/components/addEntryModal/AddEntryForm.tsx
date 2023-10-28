@@ -2,7 +2,7 @@ import { useState, SyntheticEvent } from "react";
 
 import { TextField, InputLabel, MenuItem, Select, Grid, Button, SelectChangeEvent, FormControl, Radio, FormLabel, RadioGroup, FormControlLabel, Box, Autocomplete, Chip } from '@mui/material';
 
-import { EntryFormValues, EntryType, HealthCheckRating, SickLeave } from "../../types";
+import { EntryFormValues, EntryType, SickLeave } from "../../types";
 
 import { useForm, Controller } from "react-hook-form";
 
@@ -31,7 +31,7 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
   const [specialist, setSpecialist] = useState('');
   const [diagnosisCodes, setDiagnosisCodes] =  useState<string[]>([]);
   const [type, setType] = useState(EntryType.HealthCheck);
-  const [healthCheckRating, setHealthCheckRating] = useState(HealthCheckRating.CriticalRisk);
+  const [healthCheckRating, setHealthCheckRating] = useState(0);
   const [employerName, setEmployerName] = useState('');
   const [sickLeaveStart, setSickLeaveStart] = useState<dayjs.Dayjs>(dayjs('2023-10-23'));
   const [sickLeaveEnd, setSickLeaveEnd] = useState<dayjs.Dayjs>(dayjs('2023-10-24'));
@@ -67,7 +67,13 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
   };
 
   const handleHealthRating = (event: SelectChangeEvent) => {
-    setHealthCheckRating(event.target.value as unknown as HealthCheckRating);
+    if (event.target.value === "0") {
+      console.log("asdf");
+      setHealthCheckRating(0);
+    } else {
+      setHealthCheckRating(Number(event.target.value));
+    }
+    
   };
 
  const addEntry = (event: SyntheticEvent) => {
@@ -159,10 +165,10 @@ const AddEntryForm = ({ onCancel, onSubmit }: Props) => {
                 name="radio-buttons-group"
                 onChange={handleHealthRating}
               >
-                <FormControlLabel value="Healthy" control={<Radio color="primary" />} label="0" />
-                <FormControlLabel value="LowRisk" control={<Radio color="primary"/>} label="1" />
-                <FormControlLabel value="HighRisk" control={<Radio color="primary"/>} label="2" />
-                <FormControlLabel value="CriticalRisk" control={<Radio color="primary"/>} label="3" />
+                <FormControlLabel value="0" control={<Radio color="primary" />} label="0" />
+                <FormControlLabel value="1" control={<Radio color="primary"/>} label="1" />
+                <FormControlLabel value="2" control={<Radio color="primary"/>} label="2" />
+                <FormControlLabel value="3" control={<Radio color="primary"/>} label="3" />
               </RadioGroup>
             </FormControl>
           </div>

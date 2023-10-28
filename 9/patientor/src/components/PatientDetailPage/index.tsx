@@ -38,6 +38,25 @@ const PatientDetailPage = () => {
     
   };
 
+  const reDrawView = () => {
+    fetchPatient()
+    .then(fetchedPatient => {
+      if(fetchedPatient) {
+        setPatient(fetchedPatient);
+        setName(fetchedPatient.name);
+        setGender(fetchedPatient.gender);
+        if (fetchedPatient.ssn) {
+          setSSN(fetchedPatient.ssn);
+        }
+        setOccupation(fetchedPatient.occupation);
+        if (fetchedPatient.entries) {
+          setEntries(fetchedPatient.entries);
+        }
+        
+      }
+    });
+  };
+
   useEffect(() => {
     fetchPatient()
     .then(fetchedPatient => {
@@ -56,7 +75,7 @@ const PatientDetailPage = () => {
       }
     });
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [patient]);
+  }, []);
 
   const genderIcon = gender === 'male' ? <Male /> : gender === 'female' ? <Female/> : <Transgender/>; 
 
@@ -67,6 +86,7 @@ const PatientDetailPage = () => {
       }
       setModalOpen(false);
       setErrorText('');
+      reDrawView();
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       console.error(error);
