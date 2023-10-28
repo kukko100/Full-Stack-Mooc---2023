@@ -9,10 +9,10 @@ const patientService_1 = __importDefault(require("../services/patientService"));
 const utils_1 = __importDefault(require("../utils"));
 const router = express_1.default.Router();
 router.get('/', (_request, response) => {
-    response.send(patientService_1.default.getPatients());
+    response.send(patientService_1.default.getEntries());
 });
 router.get('/:id', (request, response) => {
-    const patient = patientService_1.default.findById(String(request.params.id));
+    const patient = patientService_1.default.findById(Number(request.params.id));
     if (patient) {
         response.send(patient);
     }
@@ -20,31 +20,9 @@ router.get('/:id', (request, response) => {
         response.send(404);
     }
 });
-router.put('/:id', (request, response) => {
-    const id = request.params.id;
-    const updatedPatient = utils_1.default.toNewPatient(request.body);
-    const entries = request.body.entries;
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-call
-    entries.map((e) => {
-        Object.values(e).forEach(value => {
-            if (value === '') {
-                response.status(422).json({ error: 'Incorrect data entry, check that all fields are filled' });
-                return;
-            }
-        });
-        console.log("---");
-    });
-    const updatedPatientData = patientService_1.default.updatePatient(id, updatedPatient);
-    if (updatedPatientData) {
-        response.json(updatedPatientData);
-    }
-    else {
-        response.status(404).json({ error: 'Patient not found' });
-    }
-});
 router.post('/', (request, response) => {
     try {
-        const newPatientEntry = utils_1.default.toNewPatient(request.body);
+        const newPatientEntry = (0, utils_1.default)(request.body);
         const addedEntry = patientService_1.default.addPatient(newPatientEntry);
         response.json(addedEntry);
     }
